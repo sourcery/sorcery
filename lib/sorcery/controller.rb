@@ -185,7 +185,10 @@ module Sorcery
             :@before_logout                        => [],
             :@after_logout                         => [],
             :@save_return_to_url                   => true,
-            :@cookie_domain                        => nil
+            :@cookie_domain                        => nil,
+
+            :@configure_blks                       => [],
+            :@user_config_blks                     => []
           }
         end
 
@@ -203,15 +206,23 @@ module Sorcery
         end
 
         def user_config(&blk)
-          block_given? ? @user_config = blk : @user_config
+          block_given? ? @user_config_blks << blk : @user_config_blks
+        end
+
+        def user_config!(context)
+          @user_config_blks.each do |block|
+            block.call(context)
+          end
         end
 
         def configure(&blk)
-          @configure_blk = blk
+          @configure_blks << blk
         end
 
         def configure!
-          @configure_blk.call(self) if @configure_blk
+          @configure_blks.each do |block|
+            block.call(self)
+          end
         end
       end
       init!
