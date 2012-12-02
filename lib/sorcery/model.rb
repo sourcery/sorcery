@@ -21,7 +21,7 @@ module Sorcery
             include_required_submodules!
 
             # This runs the options block set in the initializer on the model class.
-            ::Sorcery::Controller::Config.user_config.tap{|blk| blk.call(@sorcery_config) if blk}
+            ::Sorcery::Controller::Config.user_config!(@sorcery_config)
 
             init_mongoid_support! if defined?(Mongoid) and self.ancestors.include?(Mongoid::Document)
             init_mongo_mapper_support! if defined?(MongoMapper) and self.ancestors.include?(MongoMapper::Document)
