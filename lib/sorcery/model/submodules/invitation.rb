@@ -74,10 +74,9 @@ module Sorcery
               attributes[config.invitation_token_expires_at_attribute_name] =
                 Time.now.in_time_zone + config.invitation_expiration_period
             end
-            invitee = existing_invitee || new(invitee_attrs)
+            invitee = existing_invitee || new(attributes.merge(invitee_attrs))
             transaction do
-              if invitee.persisted? || invitee.save
-                invitee.update_many_attributes(attributes)
+              if (invitee.persisted? && invitee.update_many_attributes(attributes)) || invitee.save
                 unless config.invitation_mailer_disabled
                   invitee.send(:generic_send_email, :invitation_email_method_name, :invitation_mailer)
                 end
