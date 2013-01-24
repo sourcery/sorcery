@@ -78,7 +78,11 @@ module Sorcery
             transaction do
               if (invitee.persisted? && invitee.update_many_attributes(attributes)) || invitee.save
                 unless config.invitation_mailer_disabled
-                  invitee.send(:generic_send_email, :invitation_email_method_name, :invitation_mailer)
+                  if block_given?
+                    yield invitee
+                  else
+                    invitee.send(:generic_send_email, :invitation_email_method_name, :invitation_mailer)
+                  end
                 end
               end
               invitee
