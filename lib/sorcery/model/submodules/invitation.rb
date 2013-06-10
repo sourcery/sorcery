@@ -76,7 +76,7 @@ module Sorcery
             end
             invitee = existing_invitee || new(attributes.merge(invitee_attrs))
             transaction do
-              if (invitee.persisted? && invitee.update_many_attributes(attributes)) || invitee.save
+              if (invitee.persisted? && invitee.update_many_attributes(attributes)) || invitee.save!
                 unless config.invitation_mailer_disabled
                   if block_given?
                     yield invitee
