@@ -117,6 +117,17 @@ module Sorcery
           self
         end
       end
+
+      def accept_invitation(attrs = {})
+        config = sorcery_config
+        if update_attributes(attrs)
+          update_many_attributes(
+            config.invitation_accepted_at_attribute_name => Time.now.utc,
+            config.invitation_token_attribute_name => nil
+          )
+        end
+        errors.empty?
+      end
     end
   end
 end
